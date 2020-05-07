@@ -1,2 +1,3 @@
-exe: trial1.cpp
-	g++ ./trial1.cpp -o exe
+exe: trial2.cpp
+	g++ ./trial2.cpp -o exe
+

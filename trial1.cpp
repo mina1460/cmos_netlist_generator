@@ -1,10 +1,13 @@
+
 #include <iostream>
 #include <string>
 #include <fstream>
 #include <cctype>
 using namespace std; 
 
-int n_p_mos_counter = 0;
+int n_p_mos_counter = 1;
+int wires_counter = 1;
+
 
 
 void generate(string valid_expression)
@@ -31,14 +34,11 @@ void generate(string valid_expression)
 				//gate
 				NetList << valid_expression[i]<< " "; 
 				//source and body
-				NetList << "0" << " 0";
+				NetList << "vdd" << " vdd";
 				//type 
-				NetList << " NMOS" << '\n';
+				NetList << " PMOS" << '\n';
 
 				n_p_mos_counter++;
-
-
-				////////////////////////////////////generate pmos/////////////////////////////////
 
 				NetList << "M" << n_p_mos_counter<< " "; 
 				//drain
@@ -46,18 +46,167 @@ void generate(string valid_expression)
 				//gate
 				NetList << valid_expression[i]<< " "; 
 				//source and body
-				NetList << "vdd" << " vdd";
+				NetList << "0" << " 0";
 				//type 
-				NetList << " PMOS" << '\n';
+				NetList << " NMOS" << '\n';
 
 				n_p_mos_counter++;
 			}
 		}
+		for (int i = location + 1; i < valid_expression.length(); i++){
+
+		}
+		if(valid_expression[i] == '&'){
+			char a = valid_expression[i-1];
+			char b = valid_expression[i+1];
+			//M1
+			NetList << "M" << n_p_mos_counter<< " "; 
+				//drain
+			NetList << "W" << wires_counter << " ";
+				//gate
+
+			NetList << a << " "; 
+				//source and body
+			NetList << "0" << " 0";
+				//type 
+			NetList << " NMOS" << '\n';
+
+			n_p_mos_counter++;
+
+			int common_wire1 = wires_counter;   //common wire
+
+			wires_counter++;
+			
+
+			//M2
+			NetList << "M" << n_p_mos_counter<< " "; 
+				//drain
+			NetList << "W" << wires_counter << " ";
+				//gate
+
+			NetList << b << " "; 
+				//source and body
+			NetList << "W" << common_wire1 << " "<< "W" <<  common_wire1;
+				//type 
+			NetList << " NMOS" << '\n';
+
+			n_p_mos_counter++;
+
+			int common_wire2 = wires_counter;
+
+			wires_counter++;
+
+
+			//M3
+			NetList << "M" << n_p_mos_counter<< " "; 
+				//drain
+			NetList << "W" << common_wire2 << " "; 
+				//gate
+			NetList << b << " "; 
+				//source and body
+			NetList << "vdd" << " vdd ";
+				//type 
+			NetList << "PMOS" << '\n';
+
+			n_p_mos_counter++;
+		
+			wires_counter++;
+
+
+
+			//M4
+			NetList << "M" << n_p_mos_counter<< " "; 		
+				//drain
+			NetList << "W" << common_wire2 << " "; 
+				//gate
+			NetList << a << " "; 
+				//source and body
+			NetList << "vdd" << " vdd ";
+				//type 
+			NetList << "PMOS" << '\n';
+
+			//call not gate	
+		}
+	} for (int i = location + 1; i < valid_expression.length(); i++) {
+		if(valid_expression[i] == '|'){
+			char a = valid_expression[i-1];
+			char b = valid_expression[i+1];
+
+			//M1
+			NetList << "M" << n_p_mos_counter<< " "; 
+				//drain
+			NetList << "W" << wires_counter << " ";
+				//gate
+			NetList << a << " "; 
+				//source and body
+			NetList << "0" << " 0";
+				//type 
+			NetList << " NMOS" << '\n';
+
+			n_p_mos_counter++;
+
+			int common_wire1 = wires_counter;   //common wire
+
+			wires_counter++;
+			
+
+			//M2
+			NetList << "M" << n_p_mos_counter<< " "; 
+				//drain
+			NetList << "W" << common_wire1 << " ";
+				//gate
+			NetList << b << " "; 
+				//source and body
+			NetList << "0" << " 0";
+				//type 
+			NetList << " NMOS" << '\n';
+
+			n_p_mos_counter++;
+
+			int common_wire2 = wires_counter;
+
+			wires_counter++;
+
+
+			//M3
+			NetList << "M" << n_p_mos_counter<< " "; 
+				//drain
+			NetList << "W" << common_wire1 << " "; 
+				//gate
+			NetList << a << " "; 
+				//source and body
+			NetList << "W" << common_wire2 << " W" << common_wire2;
+				//type 
+			NetList << " PMOS" << '\n';
+
+			n_p_mos_counter++;
+		
+			wires_counter++;
+
+
+
+			//M4
+			NetList << "M" << n_p_mos_counter<< " "; 		
+				//drain
+			NetList << "W" << common_wire2 << " "; 
+				//gate
+			NetList << b << " "; 
+				//source and body
+			NetList << "vdd" << " vdd ";
+				//type 
+			NetList << "PMOS" << '\n';
+
+			//call inverter
+
+		}
 	}
+		
+	
 	
 	NetList.close();	
 	return;
 }
+
 
 bool valid(string expression)
 {
