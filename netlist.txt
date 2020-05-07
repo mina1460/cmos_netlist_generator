@@ -1,2 +1,5 @@
-x = g`
-M0 x g 0 0 NMOS
+y=a&b
+M1 W1 a 0 0 NMOS
+M2 W2 b W1 W1 NMOS
+M3 W2 b vdd vdd PMOS
+M4 W2 a vdd vdd PMOS
