@@ -8,6 +8,186 @@ int n_p_mos_counter = 1;
 int wires_counter = 1;
 
 
+void NOT(string valid_expression, int location, int n_p_mos_counter, int wires_counter, int i, ofstream &NetList){
+				//nmos first
+	//id 
+	NetList << "M" << n_p_mos_counter<< " "; 
+	//drain
+	NetList << valid_expression[0] << " "; 
+	//gate
+	NetList << valid_expression[i]<< " "; 
+	//source and body
+	NetList << "vdd" << " vdd";
+	//type 
+	NetList << " PMOS" << '\n';
+
+	n_p_mos_counter++;
+
+	NetList << "M" << n_p_mos_counter<< " "; 
+	//drain
+	NetList << valid_expression[0] << " "; 
+	//gate
+	NetList << valid_expression[i]<< " "; 
+	//source and body
+	NetList << "0" << " 0";
+	//type 
+	NetList << " NMOS" << '\n';
+
+	n_p_mos_counter++;
+}
+
+
+void AND(string valid_expression, int location, int n_p_mos_counter, int wires_counter, int i, ofstream &NetList){
+	char a = valid_expression[i-1];
+	char b = valid_expression[i+1];
+	//M1
+	NetList << "M" << n_p_mos_counter<< " "; 
+		//drain
+	NetList << "W" << wires_counter << " ";
+		//gate
+
+	NetList << a << " "; 
+		//source and body
+	NetList << "0" << " 0";
+		//type 
+	NetList << " NMOS" << '\n';
+
+	n_p_mos_counter++;
+
+	int common_wire1 = wires_counter;   //common wire
+
+	wires_counter++;
+	
+
+	//M2
+	NetList << "M" << n_p_mos_counter<< " "; 
+		//drain
+	NetList << "W" << wires_counter << " ";
+		//gate
+
+	NetList << b << " "; 
+		//source and body
+	NetList << "W" << common_wire1 << " "<< "W" <<  common_wire1;
+		//type 
+	NetList << " NMOS" << '\n';
+
+	n_p_mos_counter++;
+
+	int common_wire2 = wires_counter;
+
+	wires_counter++;
+
+
+	//M3
+	NetList << "M" << n_p_mos_counter<< " "; 
+		//drain
+	NetList << "W" << common_wire2 << " "; 
+		//gate
+	NetList << b << " "; 
+		//source and body
+	NetList << "vdd" << " vdd ";
+		//type 
+	NetList << "PMOS" << '\n';
+
+	n_p_mos_counter++;
+
+	wires_counter++;
+
+
+
+	//M4
+	NetList << "M" << n_p_mos_counter<< " "; 		
+		//drain
+	NetList << "W" << common_wire2 << " "; 
+		//gate
+	NetList << a << " "; 
+		//source and body
+	NetList << "vdd" << " vdd ";
+		//type 
+	NetList << "PMOS" << '\n';
+
+	//call not gate	
+
+}
+
+
+void OR(string valid_expression, int location, int n_p_mos_counter, int wires_counter, int i, ofstream &NetList){
+		
+	char a = valid_expression[i-1];
+	char b = valid_expression[i+1];
+
+	//M1
+	NetList << "M" << n_p_mos_counter<< " "; 
+		//drain
+	NetList << "W" << wires_counter << " ";
+		//gate
+	NetList << a << " "; 
+		//source and body
+	NetList << "0" << " 0";
+		//type 
+	NetList << " NMOS" << '\n';
+
+	n_p_mos_counter++;
+
+	int common_wire1 = wires_counter;   //common wire
+
+	wires_counter++;
+	
+
+	//M2
+	NetList << "M" << n_p_mos_counter<< " "; 
+		//drain
+	NetList << "W" << common_wire1 << " ";
+		//gate
+	NetList << b << " "; 
+		//source and body
+	NetList << "0" << " 0";
+		//type 
+	NetList << " NMOS" << '\n';
+
+	n_p_mos_counter++;
+
+	int common_wire2 = wires_counter;
+
+	wires_counter++;
+
+
+	//M3
+	NetList << "M" << n_p_mos_counter<< " "; 
+		//drain
+	NetList << "W" << common_wire1 << " "; 
+		//gate
+	NetList << a << " "; 
+		//source and body
+	NetList << "W" << common_wire2 << " W" << common_wire2;
+		//type 
+	NetList << " PMOS" << '\n';
+
+	n_p_mos_counter++;
+
+	wires_counter++;
+
+
+
+	//M4
+	NetList << "M" << n_p_mos_counter<< " "; 		
+		//drain
+	NetList << "W" << common_wire2 << " "; 
+		//gate
+	NetList << b << " "; 
+		//source and body
+	NetList << "vdd" << " vdd ";
+		//type 
+	NetList << "PMOS" << '\n';
+
+}
+
+
+
+
+
+
+
 
 void generate(string valid_expression)
 {
@@ -25,182 +205,33 @@ void generate(string valid_expression)
 		{
 			if(isalpha(valid_expression[i]))
 			{
-				//nmos first
-				//id 
-				NetList << "M" << n_p_mos_counter<< " "; 
-				//drain
-				NetList << valid_expression[0] << " "; 
-				//gate
-				NetList << valid_expression[i]<< " "; 
-				//source and body
-				NetList << "vdd" << " vdd";
-				//type 
-				NetList << " PMOS" << '\n';
-
-				n_p_mos_counter++;
-
-				NetList << "M" << n_p_mos_counter<< " "; 
-				//drain
-				NetList << valid_expression[0] << " "; 
-				//gate
-				NetList << valid_expression[i]<< " "; 
-				//source and body
-				NetList << "0" << " 0";
-				//type 
-				NetList << " NMOS" << '\n';
-
-				n_p_mos_counter++;
+				//call NOT function
+				NOT(valid_expression, location, n_p_mos_counter, wires_counter, i, NetList);
+		
 			}
 		}
-		for (int i = location + 1; i < valid_expression.length(); i++){
 
-		}
-		if(valid_expression[i] == '&'){
-			char a = valid_expression[i-1];
-			char b = valid_expression[i+1];
-			//M1
-			NetList << "M" << n_p_mos_counter<< " "; 
-				//drain
-			NetList << "W" << wires_counter << " ";
-				//gate
-
-			NetList << a << " "; 
-				//source and body
-			NetList << "0" << " 0";
-				//type 
-			NetList << " NMOS" << '\n';
-
-			n_p_mos_counter++;
-
-			int common_wire1 = wires_counter;   //common wire
-
-			wires_counter++;
-			
-
-			//M2
-			NetList << "M" << n_p_mos_counter<< " "; 
-				//drain
-			NetList << "W" << wires_counter << " ";
-				//gate
-
-			NetList << b << " "; 
-				//source and body
-			NetList << "W" << common_wire1 << " "<< "W" <<  common_wire1;
-				//type 
-			NetList << " NMOS" << '\n';
-
-			n_p_mos_counter++;
-
-			int common_wire2 = wires_counter;
-
-			wires_counter++;
-
-
-			//M3
-			NetList << "M" << n_p_mos_counter<< " "; 
-				//drain
-			NetList << "W" << common_wire2 << " "; 
-				//gate
-			NetList << b << " "; 
-				//source and body
-			NetList << "vdd" << " vdd ";
-				//type 
-			NetList << "PMOS" << '\n';
-
-			n_p_mos_counter++;
+		if(valid_expression[i] == '&')
+		{
+			if(isalpha(valid_expression[i]))
+			{
+				//call AND function
+				AND(valid_expression, location, n_p_mos_counter, wires_counter, i, NetList);
 		
-			wires_counter++;
-
-
-
-			//M4
-			NetList << "M" << n_p_mos_counter<< " "; 		
-				//drain
-			NetList << "W" << common_wire2 << " "; 
-				//gate
-			NetList << a << " "; 
-				//source and body
-			NetList << "vdd" << " vdd ";
-				//type 
-			NetList << "PMOS" << '\n';
-
-			//call not gate	
+			}
 		}
-	} for (int i = location + 1; i < valid_expression.length(); i++) {
-		if(valid_expression[i] == '|'){
-			char a = valid_expression[i-1];
-			char b = valid_expression[i+1];
-
-			//M1
-			NetList << "M" << n_p_mos_counter<< " "; 
-				//drain
-			NetList << "W" << wires_counter << " ";
-				//gate
-			NetList << a << " "; 
-				//source and body
-			NetList << "0" << " 0";
-				//type 
-			NetList << " NMOS" << '\n';
-
-			n_p_mos_counter++;
-
-			int common_wire1 = wires_counter;   //common wire
-
-			wires_counter++;
-			
-
-			//M2
-			NetList << "M" << n_p_mos_counter<< " "; 
-				//drain
-			NetList << "W" << common_wire1 << " ";
-				//gate
-			NetList << b << " "; 
-				//source and body
-			NetList << "0" << " 0";
-				//type 
-			NetList << " NMOS" << '\n';
-
-			n_p_mos_counter++;
-
-			int common_wire2 = wires_counter;
-
-			wires_counter++;
-
-
-			//M3
-			NetList << "M" << n_p_mos_counter<< " "; 
-				//drain
-			NetList << "W" << common_wire1 << " "; 
-				//gate
-			NetList << a << " "; 
-				//source and body
-			NetList << "W" << common_wire2 << " W" << common_wire2;
-				//type 
-			NetList << " PMOS" << '\n';
-
-			n_p_mos_counter++;
+		if(valid_expression[i] == '|')
+		{
+			if(isalpha(valid_expression[i]))
+			{
+				//call OR function
+				OR(valid_expression, location, n_p_mos_counter, wires_counter, i, NetList);
 		
-			wires_counter++;
+			}
+		}		
 
-
-
-			//M4
-			NetList << "M" << n_p_mos_counter<< " "; 		
-				//drain
-			NetList << "W" << common_wire2 << " "; 
-				//gate
-			NetList << b << " "; 
-				//source and body
-			NetList << "vdd" << " vdd ";
-				//type 
-			NetList << "PMOS" << '\n';
-
-			//call inverter
-
-		}
-	}
 		
-	
+}	
 	
 	NetList.close();	
 	return;
