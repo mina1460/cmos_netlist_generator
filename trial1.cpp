@@ -36,6 +36,21 @@ void generate(string valid_expression)
 				NetList << " NMOS" << '\n';
 
 				n_p_mos_counter++;
+
+
+				////////////////////////////////////generate pmos/////////////////////////////////
+
+				NetList << "M" << n_p_mos_counter<< " "; 
+				//drain
+				NetList << valid_expression[0] << " "; 
+				//gate
+				NetList << valid_expression[i]<< " "; 
+				//source and body
+				NetList << "vdd" << " vdd";
+				//type 
+				NetList << " PMOS" << '\n';
+
+				n_p_mos_counter++;
 			}
 		}
 	}
