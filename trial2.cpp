@@ -152,75 +152,100 @@ string AND(string valid_expression, int location, int wires_counter, string a, s
  
  
 string OR(string valid_expression, int location, int wires_counter, string a, string b){
-     
+     string or_implementation = "";
  
     //M1
-    /*
+    
 
-    NetList << "M" << n_p_mos_counter<< " ";
+   	or_implementation = "M";
+	or_implementation += to_string(n_p_mos_counter);
         //drain
-    NetList << "W" << wires_counter << " ";
+    	or_implementation +=" W";
+	or_implementation += to_string(wires_counter);
+	or_implementation += " ";
         //gate
-    NetList << a << " ";
+	or_implementation += a;
+	or_implementation += " ";
+    
         //source and body
-    NetList << "0" << " 0";
+	or_implementation += "0 0";
+  
         //type
-    NetList << " NMOS" << '\n';
+	or_implementation += " NMOS \n";
+  
  
     n_p_mos_counter++;
  
     int common_wire1 = wires_counter;   //common wire
  
     wires_counter++;
-   
- 
     //M2
-    NetList << "M" << n_p_mos_counter<< " ";
+   	or_implementation += "M";
+	or_implementation += to_string(n_p_mos_counter);
         //drain
-    NetList << "W" << common_wire1 << " ";
+    	or_implementation +=" W";
+	or_implementation += to_string(common_wire1);
+	or_implementation += " ";
         //gate
-    NetList << b << " ";
+	or_implementation += b;
+	or_implementation += " ";
+    
         //source and body
-    NetList << "0" << " 0";
+	or_implementation += "0 0";
+  
         //type
-    NetList << " NMOS" << '\n';
+	or_implementation += " NMOS \n";
  
     n_p_mos_counter++;
  
     int common_wire2 = wires_counter;
  
     wires_counter++;
- 
- 
-    //M3
-    NetList << "M" << n_p_mos_counter<< " ";
+//M3
+   	or_implementation += "M";
+	or_implementation += to_string(n_p_mos_counter);
         //drain
-    NetList << "W" << common_wire1 << " ";
+    	or_implementation +=" W";
+	or_implementation += to_string(common_wire1);
+	or_implementation += " ";
         //gate
-    NetList << a << " ";
+	or_implementation += a;
+	or_implementation += " ";
+    
         //source and body
-    NetList << "W" << common_wire2 << " W" << common_wire2;
+	or_implementation += "W";
+	or_implementation += to_string(common_wire2);
+	or_implementation += " W";
+	or_implementation += to_string(common_wire2);
+  
         //type
-    NetList << " PMOS" << '\n';
+	or_implementation += " PMOS \n";
+ 
+
  
     n_p_mos_counter++;
  
     wires_counter++;
  
- 
- 
-    //M4
-    NetList << "M" << n_p_mos_counter<< " ";       
+     //M4
+   	or_implementation += "M";
+	or_implementation += to_string(n_p_mos_counter);
         //drain
-    NetList << "W" << common_wire2 << " ";
+    	or_implementation +=" W";
+	or_implementation += to_string(common_wire2);
+	or_implementation += " ";
         //gate
-    NetList << b << " ";
+	or_implementation += b;
+	or_implementation += " ";
+    
         //source and body
-    NetList << "vdd" << " vdd ";
+	or_implementation += "vdd vdd";
+  
         //type
-    NetList << "PMOS" << '\n';
-    */
+	or_implementation += " PMOS \n";
  
+
+	return or_implementation;
 }
  
  
@@ -282,7 +307,7 @@ void generate(string valid_expression)
                 a += valid_expression[i];
                 string b;
                 b += valid_expression[i+2];
-                OR(valid_expression, location, wires_counter, a, b);
+                NetList << OR(valid_expression, location, wires_counter, a, b);
        
             }
         }      

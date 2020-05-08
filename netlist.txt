@@ -1,7 +1,5 @@
-y = x&a
-M1 W1 x 0 0 NMOS 
-M2 W2 a W1 W1 NMOS 
-M3 W2 a vdd vdd PMOS 
-M4 W2 x vdd vdd PMOS 
-M5 y W2 vdd vdd PMOS 
-M6 y W2 0 0 NMOS 
+y=a|b
+M1 W1 a 0 0 NMOS 
+M2 W1 b 0 0 NMOS 
+M3 W1 a W2 W2 PMOS 
+M4 W2 b vdd vdd PMOS 
