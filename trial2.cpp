@@ -103,7 +103,7 @@ string AND(string valid_expression, int location, int wires_counter, string a, s
  
     int common_wire2 = wires_counter;
     string to_not = "W"; 
-            to_not += to_string(common_wire2);
+    to_not += to_string(common_wire2);
  
     wires_counter++;
  
@@ -199,7 +199,10 @@ string OR(string valid_expression, int location, int wires_counter, string a, st
     n_p_mos_counter++;
  
     int common_wire2 = wires_counter;
- 
+
+    string to_not = "W"; 
+    to_not += to_string(common_wire2);
+
     wires_counter++;
 //M3
    	or_implementation += "M";
@@ -243,8 +246,9 @@ string OR(string valid_expression, int location, int wires_counter, string a, st
   
         //type
 	or_implementation += " PMOS \n";
- 
 
+ 	n_p_mos_counter++;
+	or_implementation += NOT(valid_expression, location, wires_counter, to_not);
 	return or_implementation;
 }
  

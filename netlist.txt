@@ -1,4 +1,8 @@
-y=x`
-M1 y x vdd vdd PMOS 
-M2 y x 0 0 NMOS 
+y=a|b
+M1 W1 a 0 0 NMOS 
+M2 W1 b 0 0 NMOS 
+M3 W1 a W2 W2 PMOS 
+M4 W2 b vdd vdd PMOS 
+M5 y W2 vdd vdd PMOS 
+M6 y W2 0 0 NMOS 
 END
