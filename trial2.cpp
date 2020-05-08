@@ -314,7 +314,7 @@ void generate(string valid_expression)
  
        
 }  
-   
+    NetList << "END\n";
     NetList.close();   
     return;
 }
