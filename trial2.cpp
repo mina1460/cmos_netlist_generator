@@ -6,10 +6,11 @@ using namespace std;
  
 int n_p_mos_counter = 1;
 int wires_counter = 1;
- 
+string temp_wire; 
  
 string NOT(string valid_expression, int location, int wires_counter, string a){
-                //nmos first
+    //nmos first
+    
     //id
     string not_implementation; 
 
@@ -147,11 +148,11 @@ string AND(string valid_expression, int location, int wires_counter, string a, s
     and_implementation += NOT(valid_expression, location, wires_counter, to_not);
    // cout << and_implementation;
     return and_implementation;
+ }
  
-}
  
- 
-string OR(string valid_expression, int location, int wires_counter, string a, string b){
+string OR(string valid_expression, int location, int wires_counter, string a, string b)
+{
      string or_implementation = "";
  
     //M1
@@ -276,9 +277,9 @@ void generate(string valid_expression)
             if(isalpha(valid_expression[i]))
             {
                 //call NOT function
-            string a;
-            a += valid_expression[i];
-               NetList << NOT(valid_expression, location, wires_counter, a);
+                string a;
+                a += valid_expression[i];
+                NetList << NOT(valid_expression, location, wires_counter, a);
        
             }
         }
@@ -358,7 +359,7 @@ void handler()
    
     if( valid(boolean_expression) )
     {
-        cout << boolean_expression<<endl;
+        cout <<"You entred: " << boolean_expression << endl;
         generate(boolean_expression);
         return;
     }
