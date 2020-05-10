@@ -8,7 +8,6 @@ using namespace std;
 
 int n_p_mos_counter = 1;
 int wires_counter = 1;
-string temp_wire; 
 
 //*******************************************************************************************//
 
@@ -16,6 +15,7 @@ void handler();
 bool valid(string expression);
 void generate (string valid_expression);
 string NOT(string valid_expression, int location, string input_wire, string& output_wire);
+string AND(string valid_expression, int location, string input_wire1, string input_wire2, string& output_wire);
 
 int main()
 {
@@ -23,7 +23,7 @@ int main()
     cout<<"\nHello, this program generates NetSpice code for your boolean function."<<endl;
 
     handler();
-   
+    
     return 0;
 }
 
@@ -119,6 +119,111 @@ string NOT(string valid_expression, int location, string input_wire, string & ou
     return not_implementation; 
 }
 
+string AND(string valid_expression, int location, string input_wire1, string input_wire2, string& output_wire)
+{
+     
+    //M1
+    string and_implementation; 
+
+    and_implementation = "M"; 
+    and_implementation += to_string(n_p_mos_counter); 
+        //drain
+
+    and_implementation += " W"; 
+    and_implementation += to_string(wires_counter); 
+    and_implementation += " ";
+        //gate
+ 
+    and_implementation += input_wire1;
+        //source and body
+    and_implementation += " 0   0 ";
+
+        //type
+    and_implementation += " NMOS \n";
+ 
+    n_p_mos_counter++;
+ 
+    int common_wire1 = wires_counter;   //common wire
+ 
+    wires_counter++;
+   
+ 
+    //M2
+    //drain
+   
+    and_implementation += "M"; 
+    and_implementation += to_string(n_p_mos_counter); 
+        //drain
+
+    and_implementation += " W"; 
+    and_implementation += to_string(wires_counter); 
+    and_implementation += " ";
+ 
+    //gate
+    and_implementation += input_wire2;
+
+        //source and body
+    and_implementation += " W";
+    and_implementation += to_string (common_wire1);
+    and_implementation += " W";
+    and_implementation += to_string (common_wire1);
+        //type
+    and_implementation += " NMOS \n";
+ 
+    n_p_mos_counter++;
+ 
+    int common_wire2 = wires_counter;
+    string to_not = "W"; 
+    to_not += to_string(common_wire2);
+ 
+    wires_counter++;
+ 
+ 
+    //M3
+    and_implementation += "M";
+    and_implementation += to_string (n_p_mos_counter);
+    and_implementation += " W";
+    and_implementation += to_string (common_wire2);
+    and_implementation += " ";
+        //gate
+    and_implementation += input_wire2;
+    and_implementation += " vdd vdd ";
+        //type
+    and_implementation += "PMOS \n";
+ 
+    n_p_mos_counter++;
+ 
+    wires_counter++;
+ 
+ 
+ 
+    //M4
+    and_implementation += "M";
+    and_implementation += to_string(n_p_mos_counter);      
+    n_p_mos_counter++;
+        //drain
+    and_implementation += " W";
+    and_implementation += to_string (common_wire2);
+    and_implementation += " ";
+        //gate
+    and_implementation += input_wire1;
+        //source and body
+    and_implementation += " vdd vdd ";
+        //type
+    and_implementation += "PMOS \n";
+ 
+    //call not gate
+    //string valid_expression, int location, int wires_counter, int i
+
+    string final_output; 
+    and_implementation += NOT(valid_expression, location, to_not, final_output);
+    
+    output_wire = final_output; 
+   // cout << and_implementation;
+    return and_implementation;
+
+}
+
 void generate(string valid_expression)
 {
     ofstream NetList;
@@ -145,8 +250,44 @@ void generate(string valid_expression)
                 output_wire_name.clear();
 
                 NetList << NOT(valid_expression, location, a, output_wire_name);
+                valid_expression [i+1] = ' ';
+                if(wires_counter > 10)
+                {
+                valid_expression [i] = output_wire_name[0];
+                valid_expression [i+1] = output_wire_name[1];
+                valid_expression.insert (i+1, 1, output_wire_name[2]);
+                }
+                else 
+                {
+                    valid_expression [i] = output_wire_name[0];
+                    valid_expression [i+1] = '0';
+                    valid_expression.insert (i+2, 1, output_wire_name[1]);
+                }
+
 
             }
+        }
+    }
+
+    // should replace not variables with their output wire names 
+
+     for(int i = location + 1; i<expression_length; i++)
+    {
+        if(valid_expression[i+1] == '&')
+        {
+            
+                //call AND function
+                // we need a parser or a function that makes each argument or a wire 3 characters 
+
+                string a;
+                a = valid_expression.substr(i-2, 3);
+                string b;
+                b = valid_expression.substr(i+2,3);
+                cout<< b << endl; 
+                output_wire_name.clear();
+                NetList << AND(valid_expression, location, a, b, output_wire_name);
+       
+            
         }
     }
 
