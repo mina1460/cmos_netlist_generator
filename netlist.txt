@@ -1,10 +1,10 @@
-y=a&b`
-M1 y b vdd vdd PMOS 
-M2 y b 0 0 NMOS 
-M3 W1 a 0 0 NMOS 
-M4 W2 b W1 W1 NMOS 
-M5 W2 b vdd vdd PMOS 
-M6 W2 a vdd vdd PMOS 
-M7 y W2 vdd vdd PMOS 
-M8 y W2 0 0 NMOS 
-END
+y=a`&b
+M1 W1 a vdd vdd PMOS 
+M2 W1 a  0   0  NMOS 
+M3 W2 1&_ 0   0  NMOS 
+M4 W3 b$ W2 W2 NMOS 
+M5 W3 b$ vdd vdd PMOS 
+M6 W3 1&_ vdd vdd PMOS 
+M7 W5 W3 vdd vdd PMOS 
+M8 W5 W3  0   0  NMOS 
+where y = W5
