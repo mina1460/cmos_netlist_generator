@@ -264,12 +264,13 @@ void generate(string valid_expression)
                     valid_expression.insert (i+2, 1, output_wire_name[1]);
                 }
 
-
+           
             }
         }
     }
 
     // should replace not variables with their output wire names 
+
 
      for(int i = location + 1; i<expression_length; i++)
     {
@@ -286,10 +287,24 @@ void generate(string valid_expression)
                 cout<< b << endl; 
                 output_wire_name.clear();
                 NetList << AND(valid_expression, location, a, b, output_wire_name);
+                valid_expression [i+1] = ' ';
+                if(wires_counter > 10)
+                {
+                valid_expression [i] = output_wire_name[0];
+                valid_expression [i+1] = output_wire_name[1];
+                valid_expression.insert (i+1, 1, output_wire_name[2]);
+                }
+                else 
+                {
+                    valid_expression [i] = output_wire_name[0];
+                    valid_expression [i+1] = '0';
+                    valid_expression.insert (i+2, 1, output_wire_name[1]);
+                }
        
             
         }
     }
+
 
 
     NetList << "where " << valid_expression[0] << " = " << output_wire_name << endl; 
