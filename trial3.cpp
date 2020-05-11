@@ -20,7 +20,10 @@ string AND(string valid_expression, int location, string input_wire1, string inp
 int main()
 {
     
-    cout<<"\nHello, this program generates NetSpice code for your boolean function."<<endl;
+    
+
+
+cout <<"\nHello, this program generates NetSpice code for your boolean function."<<endl;
 
     handler();
     
@@ -73,6 +76,7 @@ bool valid(string expression){
 
 string NOT(string valid_expression, int location, string input_wire, string & output_wire)
 {
+
     string not_implementation; 
 
     not_implementation = "M"; // + n_p_mos_counter + " ";
@@ -271,7 +275,7 @@ void generate(string valid_expression)
 
     // should replace not variables with their output wire names 
 
-char *Arr = new char[100];
+
      for(int i = location + 1; i<expression_length; i++)
     {
         if(valid_expression[i+1] == '&')
@@ -306,7 +310,7 @@ char *Arr = new char[100];
             
                 //call AND function
                 // we need a parser or a function that makes each argument or a wire 3 characters 
-		cout <<"i" << i<<endl;
+	
                 string a;
                 a = valid_expression.substr(i, 3);
                 string b;
@@ -315,42 +319,29 @@ char *Arr = new char[100];
                 output_wire_name.clear();
                 NetList << AND(valid_expression, location, a, b, output_wire_name);
 		//y=w01&__c$
-//Loop
-int check_counter = 0;
-int letters_counter = 0;
-for (int i = location+1; i < valid_expression.length(); i++){
-	letters_counter++;
-	if (valid_expression[i] == '&' | valid_expression[i] == '|' | valid_expression[i] == '$'){
-		check_counter++;
-			if (check_counter == 2){
-				break;
-		}
-	}
-}
 
 
-cout << valid_expression.erase(location+1, letters_counter-1) << endl;
 
-
+		valid_expression.erase(location+1, 7);	
+ 
 
 
                 if(wires_counter > 10)
                 {
 
-                valid_expression.insert(location+1, 1, output_wire_name[0]);
+             	valid_expression.insert(location+1, 1, output_wire_name[0]);
                 valid_expression.insert(location+2,1, output_wire_name[1]);
-                valid_expression.insert (location+3, 1, output_wire_name[2]);
+               	valid_expression.insert (location+3, 1, output_wire_name[2]);
                 }
                 else 
                 {
 
-                    valid_expression.insert(location+1, 1, output_wire_name[0]);
+                     valid_expression.insert(location+1, 1, output_wire_name[0]);
                      valid_expression.insert(location+2,1,'0');
-
-                    valid_expression.insert(location+3, 1, output_wire_name[1]);
+                     valid_expression.insert(location+3, 1, output_wire_name[1]);
                 }
-		cout << "Mina string: " << valid_expression << endl;
-       
+
+       cout << "MY LATEST: " << valid_expression << endl;
             
         }
     }

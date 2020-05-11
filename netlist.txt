@@ -1,4 +1,4 @@
-y=a&b&c
+y=a&b&c&d
 M1 W1 __a 0   0  NMOS 
 M2 W2 __b W1 W1 NMOS 
 M3 W2 __b vdd vdd PMOS 
@@ -6,8 +6,8 @@ M4 W2 __a vdd vdd PMOS
 M5 W4 W2 vdd vdd PMOS 
 M6 W4 W2  0   0  NMOS 
 M7 W5 4&_ 0   0  NMOS 
-M8 W6 c$_ W5 W5 NMOS 
-M9 W6 c$_ vdd vdd PMOS 
+M8 W6 c&_ W5 W5 NMOS 
+M9 W6 c&_ vdd vdd PMOS 
 M10 W6 4&_ vdd vdd PMOS 
 M11 W8 W6 vdd vdd PMOS 
 M12 W8 W6  0   0  NMOS 
