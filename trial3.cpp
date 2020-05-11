@@ -280,6 +280,7 @@ char *Arr = new char[100];
 		/*
 			NEW PART : REPLACE EVERY CHAR WITH THREE CHARS
 		*/
+
 		int my_length = valid_expression.length();
 		valid_expression.insert(my_length, 1, '$');
 		
@@ -313,19 +314,42 @@ char *Arr = new char[100];
                 cout<< b << endl; 
                 output_wire_name.clear();
                 NetList << AND(valid_expression, location, a, b, output_wire_name);
-                valid_expression [i+1] = ' ';
+		//y=w01&__c$
+//Loop
+int check_counter = 0;
+int letters_counter = 0;
+for (int i = location+1; i < valid_expression.length(); i++){
+	letters_counter++;
+	if (valid_expression[i] == '&' | valid_expression[i] == '|' | valid_expression[i] == '$'){
+		check_counter++;
+			if (check_counter == 2){
+				break;
+		}
+	}
+}
+
+
+cout << valid_expression.erase(location+1, letters_counter-1) << endl;
+
+
+
+
                 if(wires_counter > 10)
                 {
-                valid_expression [i] = output_wire_name[0];
-                valid_expression [i+1] = output_wire_name[1];
-                valid_expression.insert (i+1, 1, output_wire_name[2]);
+
+                valid_expression.insert(location+1, 1, output_wire_name[0]);
+                valid_expression.insert(location+2,1, output_wire_name[1]);
+                valid_expression.insert (location+3, 1, output_wire_name[2]);
                 }
                 else 
                 {
-                    valid_expression [i] = output_wire_name[0];
-                    valid_expression [i+1] = '0';
-                    valid_expression.insert (i+2, 1, output_wire_name[1]);
+
+                    valid_expression.insert(location+1, 1, output_wire_name[0]);
+                     valid_expression.insert(location+2,1,'0');
+
+                    valid_expression.insert(location+3, 1, output_wire_name[1]);
                 }
+		cout << "Mina string: " << valid_expression << endl;
        
             
         }
