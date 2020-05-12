@@ -1,14 +1,32 @@
-y=a&b&c&d
-M1 W1 __a 0   0  NMOS 
-M2 W2 __b W1 W1 NMOS 
-M3 W2 __b vdd vdd PMOS 
-M4 W2 __a vdd vdd PMOS 
+y=A&B&C&D&E&F
+M1 W1 __A 0   0  NMOS 
+M2 W2 __B W1 W1 NMOS 
+M3 W2 __B vdd vdd PMOS 
+M4 W2 __A vdd vdd PMOS 
 M5 W4 W2 vdd vdd PMOS 
 M6 W4 W2  0   0  NMOS 
-M7 W5 4&_ 0   0  NMOS 
-M8 W6 c&_ W5 W5 NMOS 
-M9 W6 c&_ vdd vdd PMOS 
-M10 W6 4&_ vdd vdd PMOS 
+M7 W5 W04 0   0  NMOS 
+M8 W6 __C W5 W5 NMOS 
+M9 W6 __C vdd vdd PMOS 
+M10 W6 W04 vdd vdd PMOS 
 M11 W8 W6 vdd vdd PMOS 
 M12 W8 W6  0   0  NMOS 
-where y = W8
+M13 W9 W08 0   0  NMOS 
+M14 W10 __D W9 W9 NMOS 
+M15 W10 __D vdd vdd PMOS 
+M16 W10 W08 vdd vdd PMOS 
+M17 W12 W10 vdd vdd PMOS 
+M18 W12 W10  0   0  NMOS 
+M19 W13 W12 0   0  NMOS 
+M20 W14 __E W13 W13 NMOS 
+M21 W14 __E vdd vdd PMOS 
+M22 W14 W12 vdd vdd PMOS 
+M23 W16 W14 vdd vdd PMOS 
+M24 W16 W14  0   0  NMOS 
+M25 W17 W16 0   0  NMOS 
+M26 W18 __F W17 W17 NMOS 
+M27 W18 __F vdd vdd PMOS 
+M28 W18 W16 vdd vdd PMOS 
+M29 W20 W18 vdd vdd PMOS 
+M30 W20 W18  0   0  NMOS 
+where y = W20

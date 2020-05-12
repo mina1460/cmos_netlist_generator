@@ -2,6 +2,7 @@
 #include <string>
 #include <fstream>
 #include <cctype>
+#include <algorithm>
 using namespace std;
 
 
@@ -16,6 +17,8 @@ bool valid(string expression);
 void generate (string valid_expression);
 string NOT(string valid_expression, int location, string input_wire, string& output_wire);
 string AND(string valid_expression, int location, string input_wire1, string input_wire2, string& output_wire);
+string OR(string valid_expression, int location, string input_wire1, string input_wire2, string& output_wire);
+
 
 int main()
 {
@@ -228,6 +231,123 @@ string AND(string valid_expression, int location, string input_wire1, string inp
 
 }
 
+
+string OR(string valid_expression, int location, string input_wire1, string input_wire2, string& output_wire)
+{
+     
+    //M1
+    string or_implementation; 
+
+    or_implementation = "M"; 
+    or_implementation += to_string(n_p_mos_counter); 
+        //drain
+
+    or_implementation += " W"; 
+    or_implementation += to_string(wires_counter); 
+    or_implementation += " ";
+        //gate
+ 
+    or_implementation += input_wire1;
+        //source or body
+    or_implementation += " 0   0 ";
+
+        //type
+    or_implementation += " NMOS \n";
+ 
+    n_p_mos_counter++;
+ 
+    int common_wire1 = wires_counter;   //common wire
+ 
+    wires_counter++;
+   
+ 
+    //M2
+    //drain
+   
+    or_implementation += "M"; 
+    or_implementation += to_string(n_p_mos_counter); 
+        //drain
+
+    or_implementation += " W"; 
+    or_implementation += to_string(common_wire1); 
+    or_implementation += " ";
+ 
+    //gate
+    or_implementation += input_wire2;
+	or_implementation += " ";
+
+        //source or body
+    or_implementation += " 0   0 ";
+        //type
+    or_implementation += " NMOS \n";
+ 
+    n_p_mos_counter++;
+ 
+    int common_wire2 = wires_counter;
+    string to_not = "W"; 
+    to_not += to_string(common_wire1);
+ 
+    wires_counter++;
+ 
+ 
+    //M3
+    or_implementation += "M";
+    or_implementation += to_string (n_p_mos_counter);
+    //drain
+    or_implementation += " W";
+    or_implementation += to_string (common_wire1);
+    or_implementation += " ";
+        //gate
+    or_implementation += input_wire2;
+    or_implementation += " ";
+
+    //source
+    or_implementation += "W";
+	or_implementation += to_string(common_wire2);
+	or_implementation += " W";
+	or_implementation += to_string(common_wire2);
+
+        //type
+    or_implementation += " ";
+    or_implementation += " PMOS \n";
+ 
+    n_p_mos_counter++;
+ 
+    wires_counter++;
+ 
+ 
+ 
+    //M4
+    or_implementation += "M";
+    or_implementation += to_string(n_p_mos_counter);      
+    n_p_mos_counter++;
+        //drain
+    or_implementation += " W";
+    or_implementation += to_string (common_wire2);
+    or_implementation += " ";
+        //gate
+    or_implementation += input_wire1;
+    or_implementation += " ";
+        //source or body
+    or_implementation += "vdd vdd";
+        //type
+    or_implementation += " PMOS \n";
+ 
+    //call not gate
+    //string valid_expression, int location, int wires_counter, int i
+
+    string final_output; 
+    wires_counter--; 
+    or_implementation += NOT(valid_expression, location, to_not, final_output);
+
+    output_wire = final_output;
+
+    replace(or_implementation.begin(), or_implementation.end(), '_', ' ');
+    return or_implementation;
+
+}
+
+
 void generate(string valid_expression)
 {
     ofstream NetList;
@@ -280,50 +400,63 @@ void generate(string valid_expression)
     {
         if(valid_expression[i+1] == '&')
         {
-	
-		/*
-			NEW PART : REPLACE EVERY CHAR WITH THREE CHARS
-		*/
+        
+            int my_length = valid_expression.length();
+            valid_expression.insert(my_length, 1, '$');
+            
+            int counter = 0;
 
-		int my_length = valid_expression.length();
-		valid_expression.insert(my_length, 1, '$');
-		
-		int counter = 0;
-		for (int i = location + 1; i <= my_length; i++){
-			if (valid_expression[i] != '&' && valid_expression[i] != '|' && valid_expression[i] != '$'){
-				counter++;
-			} else {
-				if (counter == 3){
-					counter = 0;
-					continue;
-				} else {
-				valid_expression.insert(i - counter, 2, '_');
-				i += 2 ;
-				my_length += 2;
-				counter = 0;
-				}
-			}
-			
-		}
-
+                for (int j = location + 1; j <= my_length; j++)
+                {
+                    if (valid_expression[j] != '&' && valid_expression[j] != '|' && valid_expression[j] != '$')
+                    {
+                        counter++;
+                    } 
+                    else 
+                    {
+                        if (counter == 3)
+                        {
+                            counter = 0;
+                            continue;
+                        } 
+                        else
+                        {
+                            valid_expression.insert(j - counter, 2, '_');
+                            j += 2 ;
+                            my_length += 2;
+                            counter = 0;
+                        }
+                    }
+        
+                }
+        }
+    }
+        int temp = valid_expression.length() -4 ;
+        //valid_expression.erase(temp, 4);
 		cout << "New Expression: "<< valid_expression << endl;
             
                 //call AND function
                 // we need a parser or a function that makes each argument or a wire 3 characters 
-	
+
+	 for(int i = location + 1; i<expression_length; i++)
+    {
+        if(valid_expression[i+1] == '&')
+        {
                 string a;
-                a = valid_expression.substr(i, 3);
+                a = valid_expression.substr(i-2, 3);
+                cout<<"string a: "<<a<<endl; 
                 string b;
-                b = valid_expression.substr(i+4,3);
-                cout<< b << endl; 
+                b = valid_expression.substr(i+2,3);
+                cout<<"string b: "<<b<<endl; 
                 output_wire_name.clear();
+
                 NetList << AND(valid_expression, location, a, b, output_wire_name);
 		//y=w01&__c$
 
 
 
 		valid_expression.erase(location+1, 7);	
- 
+        i -= 7; 
 
 
                 if(wires_counter > 10)
@@ -342,7 +475,7 @@ void generate(string valid_expression)
                 }
 
        cout << "MY LATEST: " << valid_expression << endl;
-            
+          
         }
     }
 
